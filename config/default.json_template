@@ -1,0 +1,13 @@
+{
+	"server":{
+		"hostAddress": "",
+		"port": 3000
+	},
+	"mongodb":{
+		"hostName": "",
+		"port": 27017,
+		"databaseName": ""
+	
+	} 
+
+}

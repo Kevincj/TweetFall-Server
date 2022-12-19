@@ -6,7 +6,7 @@ const {MongoClient} = require('mongodb');
 const app = express()
 
 
-const uri = `mongodb://${config.get('mongodb.hostName')}:${config.get('mongodb.port')}`
+const uri = `mongodb://${config.get('mongodb.host')}:${config.get('mongodb.port')}`
 const client = new MongoClient(uri);
 
 async function main(){
@@ -14,7 +14,7 @@ async function main(){
 	try {
     await client.connect();
 
-    await client.db("tweet_fall").command({ping:1});
+    await client.db(config.get('mongodb.databaseName')).command({ping:1});
 	console.log("success")
 } catch (e) {
 await client.close();
@@ -26,7 +26,7 @@ main().catch(console.error);
 
 app.use(cors())
 var corsOptions = {
-  origin: 'http://localhost',
+  origin: config.get('server.host'),
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
