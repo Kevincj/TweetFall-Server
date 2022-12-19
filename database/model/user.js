@@ -1,9 +1,9 @@
 const mongoose = require('mongoose')
-
+const {Schema} = mongoose;
 
 const userSchema = new Schema(
 {
-  id: String,
+  _id: {type: String, required: true},
   userName: String,
   screenName: String,
   followers: Number,

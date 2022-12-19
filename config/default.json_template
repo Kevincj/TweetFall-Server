@@ -11,6 +11,20 @@
 		"port": 27017,
 		"databaseName": "tweet_fall"
 	
-	} 
+	},
+	"twitter":{
+		"OAuth1": {
+			"api_key": "",
+			"api_secret": "",
+			"access_token": "",
+			"access_secret": ""
+		},
+		"OAuth2": {
+			"access_token": "",
+			"refresh_token": "",
+			"expired_at": ""
+		},
+		"Bearer": ""
+	}
 
 }

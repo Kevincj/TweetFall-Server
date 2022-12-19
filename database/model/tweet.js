@@ -1,26 +1,27 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose')
 const {Schema} = mongoose;
 
+const refSchema = new Schema({
+	isReply: Boolean,
+	replyToUser: {type: Schema.Types.ObjectId, ref: "User"},
+	replyToTweet: {type: Schema.Types.ObjectId, ref: "Tweet"},
+	isRetweet: Boolean,
+	retweetToUserId: {type: Schema.Types.ObjectId, ref: "User"},
+	retweetToTweetId: {type: Schema.Types.ObjectId, ref: "Tweet"},
+	isQuote: Boolean,
+	quoteToUserId: {type: Schema.Types.ObjectId, ref: "User"},
+	quoteToTweetId: {type: Schema.Types.ObjectId, ref: "Tweet"},
+	hasMentions: Boolean,
+	mentions:[{type: Schema.Types.ObjectId, ref: "User"}],
+	hasHashTags:Boolean,
+	hashTags: [String]
+})
 
 const tweetSchema = new Schema({
-	id: String,
+	_id: {type: String, required: true},
 	text: String,
 
-	ref:{
-		isReply: Boolean,
-		replyToUser: {type: Schema.Types.ObjectId, ref: "User"},
-		replyToTweet: {type: Schema.Types.ObjectId, ref: "Tweet"},
-		isRetweet: Boolean,
-		retweetToUserId: {type: Schema.Types.ObjectId, ref: "User"},
-		retweetToTweetId: {type: Schema.Types.ObjectId, ref: "Tweet"},
-		isQuote: Boolean,
-		quoteToUserId: {type: Schema.Types.ObjectId, ref: "User"},
-		quoteToTweetId: {type: Schema.Types.ObjectId, ref: "Tweet"},
-		hasMentions: Boolean,
-		mentions:[{type: Schema.Types.ObjectId, ref: "User"}],
-		hasHashTags:Boolean,
-		hashTags: [String]
-	},
+	ref: refSchema,
 
 	author: {type: Schema.Types.ObjectId, ref: "User"},
 

@@ -1,9 +1,10 @@
 const express = require('express')
 var cors = require('cors')
 const config = require('config');
-const {MongoClient} = require('mongodb');
 
 const app = express()
+
+console.log(`${config.get('mongodb.host')}`)
 
 
 var corsOptions = {
