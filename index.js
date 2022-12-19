@@ -6,31 +6,14 @@ const {MongoClient} = require('mongodb');
 const app = express()
 
 
-const uri = `mongodb://${config.get('mongodb.host')}:${config.get('mongodb.port')}`
-const client = new MongoClient(uri);
-
-async function main(){
-
-	try {
-    await client.connect();
-
-    await client.db(config.get('mongodb.databaseName')).command({ping:1});
-	console.log("success")
-} catch (e) {
-await client.close();
-    console.error(e);
-}
-}
-main().catch(console.error);
-
-
-app.use(cors())
 var corsOptions = {
-  origin: config.get('server.host'),
+
+  origin: `${config.get('cors.address')}`,
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
-app.get('/',  (req, res) => {
+app.use(cors(corsOptions))
+app.get('/', (req, res) => {
   res.send({
     "data": [
         {
