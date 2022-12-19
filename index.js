@@ -1,14 +1,36 @@
 const express = require('express')
 var cors = require('cors')
+const config = require('config');
+const {MongoClient} = require('mongodb');
+
 const app = express()
-const port = 3001
+
+
+const uri = `mongodb://${config.get('mongodb.hostName')}:${config.get('mongodb.port')}`
+const client = new MongoClient(uri);
+
+async function main(){
+
+	try {
+    await client.connect();
+
+    await client.db("tweet_fall").command({ping:1});
+	console.log("success")
+} catch (e) {
+await client.close();
+    console.error(e);
+}
+}
+main().catch(console.error);
+
+
 app.use(cors())
 var corsOptions = {
   origin: 'http://localhost',
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
-app.get('/', (req, res) => {
+app.get('/',  (req, res) => {
   res.send({
     "data": [
         {
@@ -67,6 +89,7 @@ app.get('/', (req, res) => {
 })
 })
 
+const port = config.get('server.port')
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })

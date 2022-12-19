@@ -130,3 +130,4 @@ dist
 .pnp.*
 
 *.ipynb
+config/default.json
