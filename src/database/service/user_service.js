@@ -7,7 +7,7 @@ class UserInterface {
   }
 }
 const test = UserInterface.findUsersByIds(["123"]);
-console.log(await test);
+// console.log(await test);
 
 export default UserInterface;
 // console.log(await UserInterface.findUsersByIds(["123"]));
