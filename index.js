@@ -1,52 +1,17 @@
 import express from "express";
 import cors from "cors";
-import config from "config";
+
+import config from "config"; // Import config file using node-config
+
+import "./src/database/connect.js"; // Database connection
 
 import UserService from "./src/database/service/user_service.js";
-import "./src/database/connect.js";
+import TweetService from "./src/database/service/tweet_service.js";
+import extractMedia from "./src/twitter/media.js";
 
-import tweetJSON from "./test_data.json" assert { type: "json" };
+import tweetJSON from "./test_data.json" assert { type: "json" }; // Sample Twitter timeline response
 const twitterData = tweetJSON;
 
-const app = express();
-console.log(`${config.get("cors.address")}`);
-var corsOptions = {
-  origin: `${config.get("cors.address")}`,
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
-
-function findBestVideoSource(videoSources) {
-  let bestBitRate = 0;
-  let bestVideoSource = "";
-  for (var i = 0; i < videoSources.length; i++) {
-    let video = videoSources[i];
-    if (
-      video.content_type &&
-      video.content_type == "video/mp4" &&
-      video.bitrate > bestBitRate
-    ) {
-      bestVideoSource = video.url;
-      bestBitRate = video.bitrate;
-    }
-  }
-  return bestVideoSource;
-}
-
-function extractMedia(mediaInfo) {
-  if (mediaInfo.type == "photo") {
-    return {
-      type: "image",
-      url: mediaInfo.media_url,
-    };
-  } else if (mediaInfo.type == "video") {
-    let bestVideoSource = findBestVideoSource(mediaInfo.video_info.variants);
-
-    return {
-      type: "video",
-      url: bestVideoSource,
-    };
-  }
-}
 function fetch() {
   let tweetsToAdd = [];
   let userSet = new Set();
@@ -88,14 +53,25 @@ async function insert(data) {
   }
 }
 
+// Initialize express server
+const app = express();
+const port = config.get("server.port");
+
+// Cors policy
+var corsOptions = {
+  origin: `${config.get("cors.address")}`,
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
 app.use(cors(corsOptions));
+
+// Homepage: Twitter timeline
 app.get("/", (req, res) => {
   const tweets = fetch();
   console.log(tweets);
   res.send(tweets);
 });
 
-const port = config.get("server.port");
+// Start server
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`TweetFall listening on port ${port}`);
 });
