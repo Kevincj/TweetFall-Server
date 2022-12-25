@@ -6,6 +6,7 @@ const userSchema = new Schema({
   screenName: String,
   followers: Number,
   following: Number,
+  favorites: Number,
 });
 const User = mongoose.model("User", userSchema);
 
