@@ -5,9 +5,21 @@ class UserService {
       (await User.find().where("_id").in(userIds).exec()).map((res) => res._id)
     );
   }
+  static async insertMany(users) {
+    return await User.insertMany(users);
+  }
+
+  static async insertOne(user) {
+    return await User.create(user);
+  }
+
+  static async deleteOne(userId) {
+    return await User.deleteOne({ _id: userId });
+  }
+
+  static async deleteMany(userIds) {
+    return await User.deleteMany({ _id: { $in: userIds } });
+  }
 }
-// const test = UserService.findUsersByIds(["123"]);
-// console.log(await test);
 
 export default UserService;
-// console.log(await UserInterface.findUsersByIds(["123"]));

@@ -1,5 +1,4 @@
 import Tweet from "../model/tweet.js";
-import "../connect.js";
 
 class TweetService {
   static async getTimeLineMaxId() {
@@ -7,8 +6,26 @@ class TweetService {
     if (latestTweet.length != 0) return latestTweet._id;
     return 0;
   }
+
+  static async insertMany(tweets) {
+    try {
+      console.log(tweets);
+      const res = await Tweet.insertMany(tweets);
+      console.log(res);
+    } catch (e) {
+      console.log(e.message);
+    }
+  }
+
+  static async insert(tweet) {
+    try {
+      console.log(tweet);
+      const res = await Tweet.create(tweet);
+      console.log(res);
+    } catch (e) {
+      console.log(e.message);
+    }
+  }
 }
-// const test = TweetService.getTimeLineMaxId();
-// console.log(test);
 
 export default TweetService;
