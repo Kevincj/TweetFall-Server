@@ -6,19 +6,19 @@ class UserService {
     );
   }
   static async insertMany(users) {
-    return await User.insertMany(users);
+    return User.insertMany(users);
   }
 
   static async insertOne(user) {
-    return await User.create(user);
+    return User.create(user);
   }
 
   static async deleteOne(userId) {
-    return await User.deleteOne({ _id: userId });
+    return User.deleteOne({ _id: userId });
   }
 
   static async deleteMany(userIds) {
-    return await User.deleteMany({ _id: { $in: userIds } });
+    return User.deleteMany({ _id: { $in: userIds } });
   }
 }
 

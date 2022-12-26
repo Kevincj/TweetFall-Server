@@ -8,23 +8,19 @@ class TweetService {
   }
 
   static async insertMany(tweets) {
-    try {
-      console.log(tweets);
-      const res = await Tweet.insertMany(tweets);
-      console.log(res);
-    } catch (e) {
-      console.log(e.message);
-    }
+    return Tweet.insertMany(tweets);
   }
 
   static async insert(tweet) {
-    try {
-      console.log(tweet);
-      const res = await Tweet.create(tweet);
-      console.log(res);
-    } catch (e) {
-      console.log(e.message);
-    }
+    return Tweet.create(tweet);
+  }
+
+  static async delete(tweetId) {
+    return Tweet.deleteOne({ _id: tweetId });
+  }
+
+  static async deleteMany(tweetIds) {
+    return Tweet.deleteMany({ _id: { $in: tweetIds } });
   }
 }
 
