@@ -1,8 +1,7 @@
-import "./src/database/connect.js"; // Database connection
-
-async function fetchUsers(userList) {
+import API from "./connect_v1.js";
+export async function fetchUsers(userList) {
   let usersString = userList.toString();
-  console.log(usersString);
+  //   console.log("userString", usersString);
   let data = await API.get("users/lookup", {
     user_id: usersString,
   })
@@ -19,5 +18,5 @@ async function fetchUsers(userList) {
     favorites: user.favourites_count,
   }));
 
-  console.log(users);
+  return users;
 }

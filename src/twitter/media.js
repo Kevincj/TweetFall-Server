@@ -1,4 +1,3 @@
-
 function findBestVideoSource(videoSources) {
   let bestBitRate = 0;
   let bestVideoSource = "";
@@ -19,15 +18,16 @@ function findBestVideoSource(videoSources) {
 function extractMedia(mediaInfo) {
   if (mediaInfo.type == "photo") {
     return {
-      type: "image",
+      media_type: "image",
       url: mediaInfo.media_url,
     };
   } else if (mediaInfo.type == "video") {
     let bestVideoSource = findBestVideoSource(mediaInfo.video_info.variants);
 
     return {
-      type: "video",
+      media_type: "video",
       url: bestVideoSource,
+      preview: mediaInfo.media_url,
     };
   }
 }
