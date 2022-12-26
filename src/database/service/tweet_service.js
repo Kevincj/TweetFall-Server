@@ -1,6 +1,19 @@
 import Tweet from "../model/tweet.js";
-
+import "../connect.js";
 class TweetService {
+  static async findNonExistingTweetsByIds(tweetIds) {
+    let existingIds = await this.findTweetsByIds(tweetIds);
+    return tweetIds.filter((idx) => !existingIds.has(idx));
+  }
+
+  static async findTweetsByIds(tweetIds) {
+    return new Set(
+      (await Tweet.find().where("_id").in(tweetIds).exec()).map(
+        (res) => res._id
+      )
+    );
+  }
+
   static async getTimeLineMaxId() {
     let latestTweet = await Tweet.find().sort({ _id: -1 }).limit(1);
     if (latestTweet.length != 0) return latestTweet._id;

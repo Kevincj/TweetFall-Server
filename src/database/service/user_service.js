@@ -1,5 +1,11 @@
 import User from "../model/user.js";
+import "../connect.js";
 class UserService {
+  static async findNonExistingUsersByIds(userIds) {
+    let existingIds = await this.findUsersByIds(userIds);
+    return userIds.filter((idx) => !existingIds.has(idx));
+  }
+
   static async findUsersByIds(userIds) {
     return new Set(
       (await User.find().where("_id").in(userIds).exec()).map((res) => res._id)

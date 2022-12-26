@@ -13,10 +13,10 @@ mongoose
     }
   )
   .then(() => {
-    console.log("Mongoose connection done");
+    console.log("Mongoose connected.");
   })
   .catch((e) => {
-    console.log("Mongoose connection error");
+    console.log("Mongoose connection error.");
     console.error(e);
   });
 

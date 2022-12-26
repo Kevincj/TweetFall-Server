@@ -40,8 +40,9 @@ const tweetSchema = new Schema({
 
   media: [
     {
-      type: String,
+      media_type: String,
       url: String,
+      preview: String,
     },
   ],
 });
