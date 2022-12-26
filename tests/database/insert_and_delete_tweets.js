@@ -104,7 +104,7 @@ async function deleteManyTest() {
     .catch((err) => console.log(err));
 }
 
-// insertOneTweetTest();
-// insertManyTweetsTest();
+insertOneTweetTest();
+insertManyTweetsTest();
 deleteOneTest();
 deleteManyTest();
