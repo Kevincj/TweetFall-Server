@@ -29,7 +29,6 @@ async function fetchTimeline() {
   let tweetIdSet = new Set();
   for (var i = 0; i < response.data.length; i++) {
     var ele = response.data[i];
-    // userSet.add(ele.user.id_str);
     var tweet = {
       _id: ele.id_str,
       text: ele.text,
@@ -42,16 +41,22 @@ async function fetchTimeline() {
       },
     };
     if (ele.extended_entities && ele.extended_entities.media) {
-      tweet.media = ele.extended_entities.media.map((media) =>
-        extractMedia(media)
+      console.log(ele.extended_entities.media);
+      let medias = await Promise.all(
+        ele.extended_entities.media.map((mediaJSON) => extractMedia(mediaJSON))
       );
+
+      tweet.media = medias.filter((media) => media.filePath != "");
+      if (tweet.media.size <= 0) continue;
     } else continue;
     if (!tweetIdSet.has(tweet._id)) tweets.push(tweet);
   }
-
+  console.log(tweetIdSet);
   let nonExistingTweetIdSet = new Set(
     await TweetService.findNonExistingTweetsByIds([...tweetIdSet])
   );
+
+  console.log(nonExistingTweetIdSet);
   if (nonExistingTweetIdSet.size > 0) {
     tweets = tweets.filter((tweet) => nonExistingTweetIdSet.has(tweet._id));
     await TweetService.insertMany(tweets);
