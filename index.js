@@ -6,15 +6,6 @@ import config from "config"; // Import config file using node-config
 import "./src/database/connect.js"; // Database connection
 import fetchTimeline from "./src/twitter/timeline.js";
 
-async function insert(data) {
-  try {
-    const res = await Tweet.createMany(data);
-    console.log(res);
-  } catch (e) {
-    console.log(e.message);
-  }
-}
-
 // Initialize express server
 const app = express();
 const port = config.get("server.port");
