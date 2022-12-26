@@ -1,26 +1,26 @@
 import { mongoose, Schema } from "mongoose";
 
 const tweetSchema = new Schema({
-  id: String,
+  _id: { type: String, required: true },
   text: String,
 
   ref: {
     isReply: Boolean,
-    replyToUser: { type: Schema.Types.ObjectId, ref: "User" },
-    replyToTweet: { type: Schema.Types.ObjectId, ref: "Tweet" },
+    replyToUser: String,
+    replyToTweet: String,
     isRetweet: Boolean,
-    retweetToUserId: { type: Schema.Types.ObjectId, ref: "User" },
-    retweetToTweetId: { type: Schema.Types.ObjectId, ref: "Tweet" },
+    retweetToUserId: String,
+    retweetToTweetId: String,
     isQuote: Boolean,
-    quoteToUserId: { type: Schema.Types.ObjectId, ref: "User" },
-    quoteToTweetId: { type: Schema.Types.ObjectId, ref: "Tweet" },
+    quoteToUserId: String,
+    quoteToTweetId: String,
     hasMentions: Boolean,
-    mentions: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    mentions: [String],
     hasHashTags: Boolean,
     hashTags: [String],
   },
 
-  author: { type: Schema.Types.ObjectId, ref: "User" },
+  author: String,
 
   createdAt: {
     type: Date,

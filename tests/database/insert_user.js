@@ -13,7 +13,7 @@ async function insertOneTest() {
     .then(console.log("Success."))
     .catch((err) => console.log(err));
 
-  await User.deleteOne({ _id: "3456" });
+  //   await User.deleteOne({ _id: "3456" });
 }
 
 async function insertManyTest() {
@@ -38,7 +38,7 @@ async function insertManyTest() {
     .then(console.log("Success."))
     .catch((err) => console.log(err));
 
-  await User.deleteMany({ _id: { $in: ["3456", "2345"] } });
+  //   await User.deleteMany({ _id: { $in: ["3456", "2345"] } });
 }
 
 insertOneTest();
