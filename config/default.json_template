@@ -25,6 +25,9 @@
 			"expired_at": ""
 		},
 		"Bearer": ""
+	},
+	"storage":{
+		"directory": "./storage/"
 	}
 
 }
