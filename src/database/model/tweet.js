@@ -40,7 +40,8 @@ const tweetSchema = new Schema({
 
   media: [
     {
-      media_type: String,
+      mediaID: String,
+      mediaType: String,
       url: String,
       filePath: String,
       preview: String,
