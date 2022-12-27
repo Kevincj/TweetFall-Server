@@ -8,8 +8,9 @@
     "nodejs-file-downloader": "^4.10.3",
     "prettier": "^2.8.1",
     "promised-twit": "^0.1.0",
-    "react-uuid": "^2.0.0",
-    "twit": "^2.2.11"
+    "twit": "^2.2.11",
+    "uuid": "^9.0.0",
+    "winston": "^3.8.2"
   },
   "type": "module"
 }
