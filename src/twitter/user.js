@@ -1,4 +1,5 @@
 import API from "./connect_v1.js";
+import logger from "../logging.js";
 export async function fetchUsers(userList) {
   let usersString = userList.toString();
   //   console.log("userString", usersString);
@@ -6,7 +7,7 @@ export async function fetchUsers(userList) {
     user_id: usersString,
   })
     .then((response) => response.data)
-    .catch((error) => console.log(error));
+    .catch((error) => logger.error(error));
 
   console.log(data);
   let users = data.map((user) => ({

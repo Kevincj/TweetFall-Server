@@ -1,7 +1,7 @@
 import extractMedia from "./media.js";
 // import TweetService from "../database/service/tweet_service";
 // Database connection
-
+import logger from "../logging.js";
 import tweetJSON from "../../test_data.json" assert { type: "json" }; // Sample Twitter timeline response
 import TweetService from "../database/service/tweet_service.js";
 import UserService from "../database/service/user_service.js";
@@ -12,16 +12,20 @@ async function fetchTimeline() {
 
   // Query new Tweets from timeline API
   let response = tweetJSON; // Mock the Timeline response
-  //   console.log(response);
+  logger.debug(`Fetched response: ${response}`);
 
   // Extract users and save
   let userSet = new Set(response.data.map((tweet) => tweet.user.id_str));
+  logger.debug(`Users in response: ${userSet}`);
   let nonExistingUsers = await UserService.findNonExistingUsersByIds([
     ...userSet,
   ]);
+  logger.debug(`Nonexisting users: ${nonExistingUsers}`);
   if (nonExistingUsers.length > 0) {
     let users = await fetchUsers(nonExistingUsers);
-    await UserService.insertMany(users);
+    await UserService.insertMany(users)
+      .then(() => logger.info(`User insertion succeeds.`))
+      .catch((err) => logger.error(err));
   }
 
   // Format Tweets in the response
@@ -41,26 +45,28 @@ async function fetchTimeline() {
       },
     };
     if (ele.extended_entities && ele.extended_entities.media) {
-      console.log(ele.extended_entities.media);
-      let medias = await Promise.all(
-        ele.extended_entities.media.map((mediaJSON) => extractMedia(mediaJSON))
+      tweet.media = ele.extended_entities.media.map((mediaJSON) =>
+        extractMedia(ele.id_str, mediaJSON)
       );
-
-      tweet.media = medias.filter((media) => media.filePath != "");
-      if (tweet.media.size <= 0) continue;
     } else continue;
     if (!tweetIdSet.has(tweet._id)) tweets.push(tweet);
   }
-  console.log(tweetIdSet);
+  logger.verbose(tweets);
+  logger.debug(tweetIdSet);
   let nonExistingTweetIdSet = new Set(
-    await TweetService.findNonExistingTweetsByIds([...tweetIdSet])
+    await TweetService.findNonExistingTweetsByIds([...tweetIdSet]).catch(
+      (err) => logger.error(err)
+    )
   );
 
-  console.log(nonExistingTweetIdSet);
+  //   console.log(nonExistingTweetIdSet);
   if (nonExistingTweetIdSet.size > 0) {
     tweets = tweets.filter((tweet) => nonExistingTweetIdSet.has(tweet._id));
-    await TweetService.insertMany(tweets);
+    await TweetService.insertMany(tweets)
+      .then(() => logger.info(`Tweets insertion succeeds.`))
+      .catch((err) => logger.error(err));
   }
+
   return tweets;
 }
 

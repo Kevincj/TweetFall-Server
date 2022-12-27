@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import config from "config";
+import logger from "../logging.js";
 
 mongoose.set("strictQuery", true);
 mongoose
@@ -13,11 +14,11 @@ mongoose
     }
   )
   .then(() => {
-    console.log("Mongoose connected.");
+    logger.info("Mongoose connected.");
   })
   .catch((e) => {
-    console.log("Mongoose connection error.");
-    console.error(e);
+    logger.info("Mongoose connection error.");
+    logger.error(e);
   });
 
 const connection = mongoose.connection;

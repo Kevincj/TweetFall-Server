@@ -1,5 +1,6 @@
 import User from "../model/user.js";
 import "../connect.js";
+import logger from "../../logging.js";
 class UserService {
   static async findNonExistingUsersByIds(userIds) {
     let existingIds = await this.findUsersByIds(userIds);

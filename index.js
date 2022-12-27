@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 
 import config from "config"; // Import config file using node-config
-
+import logger from "./src/logging.js";
 import "./src/database/connect.js"; // Database connection
 import fetchTimeline from "./src/twitter/timeline.js";
 
@@ -22,6 +22,7 @@ app.get("/", async (req, res) => {
   let tweets = await fetchTimeline();
   res.send(tweets);
 });
+app.use("/static", express.static("../../../e/Resources/TweetFallStore"));
 
 // Start server
 app.listen(port, () => {

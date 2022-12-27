@@ -1,5 +1,6 @@
 import Tweet from "../model/tweet.js";
 import "../connect.js";
+import logger from "../../logging.js";
 class TweetService {
   static async findNonExistingTweetsByIds(tweetIds) {
     let existingIds = await this.findTweetsByIds(tweetIds);
@@ -35,6 +36,8 @@ class TweetService {
   static async deleteMany(tweetIds) {
     return Tweet.deleteMany({ _id: { $in: tweetIds } });
   }
+
+  static async updateMediaPath(tweetId, mediaID) {}
 }
 
 export default TweetService;
