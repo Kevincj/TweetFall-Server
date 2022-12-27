@@ -1,7 +1,7 @@
 import TweetService from "../../src/database/service/tweet_service.js";
-import mongoose from "mongoose";
 import Tweet from "../../src/database/model/tweet.js";
 import "../../src/database/connect.js";
+import logger from "../../src/logging.js";
 let tweet = {
   _id: "123",
   text: "test",

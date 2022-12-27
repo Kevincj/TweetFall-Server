@@ -1,6 +1,7 @@
 import UserService from "../../src/database/service/user_service.js";
 import User from "../../src/database/model/user.js";
 import "../../src/database/connect.js";
+import logger from "../../src/logging.js";
 async function insertOneTest() {
   await UserService.insertOne({
     _id: "3456",
