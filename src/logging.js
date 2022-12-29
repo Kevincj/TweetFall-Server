@@ -2,12 +2,30 @@ import winston from "winston";
 
 const logger = winston.createLogger({
   level: "info",
-  format: winston.format.json(),
+  format: winston.format.combine(
+    winston.format.timestamp({
+      format: "MMM-DD-YYYY HH:mm:ss",
+    }),
+    winston.format.printf(
+      (info) => `${info.level}: ${[info.timestamp]}: ${info.message}`
+    )
+  ),
   defaultMeta: { service: "user-service" },
   transports: [
-    new winston.transports.File({ filename: "logs/error.log", level: "error" }),
-    new winston.transports.File({ filename: "logs/general.log" }),
-    new winston.transports.File({ filename: "logs/debug.log", level: "debug" }),
+    new winston.transports.File({
+      filename: "logs/error.log",
+      level: "error",
+      options: { flags: "w" },
+    }),
+    new winston.transports.File({
+      filename: "logs/general.log",
+      options: { flags: "w" },
+    }),
+    new winston.transports.File({
+      filename: "logs/debug.log",
+      level: "debug",
+      options: { flags: "w" },
+    }),
   ],
 });
 
