@@ -44,7 +44,7 @@ const tweetSchema = new Schema({
       mediaType: String,
       url: String,
       filePath: String,
-      preview: String,
+      previewFilePath: String,
     },
   ],
 });

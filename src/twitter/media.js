@@ -1,37 +1,49 @@
 import Downloader from "nodejs-file-downloader";
 import { v4 as uuidv4 } from "uuid";
 import Tweet from "../database/model/tweet.js";
+import { extractUrl, extractExtension } from "../tools/url.js";
 
 import config from "config";
 import logger from "../logging.js";
 
-function saveMedia(tweetID, mediaID, mediaURL, mediaType) {
-  if (mediaType == "preview") saveFile(tweetID, mediaID, mediaURL, "preview");
-  else saveFile(tweetID, mediaID, mediaURL, "filePath");
+function saveMedia(tweetID, mediaID, mediaUrl, mediaType) {
+  if (mediaType == "preview")
+    saveFile(tweetID, mediaID, mediaUrl, "previewFilePath");
+  else saveFile(tweetID, mediaID, mediaUrl, "filePath");
 }
 
-function saveFile(tweetID, mediaID, mediaURL, key) {
+function saveFile(tweetID, mediaID, mediaUrl, key) {
   //   const field = `media.$.${key}`;
   const directory = config.get("storage.directory");
-  const extension = mediaURL.split("?")[0].split(".").pop();
+  const extension = extractExtension(mediaUrl);
   const fileName = `${tweetID}-${mediaID}.${extension}`;
   const downloader = new Downloader({
-    url: mediaURL,
+    url: mediaUrl,
     directory: directory,
     fileName: fileName,
   });
   downloader
     .download()
     .then(() => {
-      logger.debug(`Downloaded: ${mediaURL}`);
+      logger.debug(`Downloaded: ${mediaUrl}`);
+      logger.debug(
+        JSON.stringify(
+          { _id: tweetID, "media.mediaID": mediaID },
+          {
+            $set: { [`media.$.${key}`]: fileName },
+          }
+        )
+      );
       Tweet.updateOne(
         { _id: tweetID, "media.mediaID": mediaID },
         {
           $set: { [`media.$.${key}`]: fileName },
         }
-      );
+      )
+        .then((res) => logger.debug(JSON.stringify(res)))
+        .catch((err) => logger.error(err));
     })
-    .catch(() => logger.error(`Failed to download:  ${mediaURL}`));
+    .catch((e) => logger.error(`Failed to download:  ${mediaUrl}`));
 }
 
 function findBestVideoSource(videoSources) {
@@ -48,32 +60,42 @@ function findBestVideoSource(videoSources) {
       bestBitRate = video.bitrate;
     }
   }
-  return bestVideoSource;
+  return extractUrl(bestVideoSource);
 }
 
 function extractMedia(tweetID, mediaInfo) {
+  //   logger.debug(
+  //     `Extract media: tweetID ${tweetID}, mediaInfo ${JSON.stringify(
+  //       mediaInfo
+  //     )}, type ${mediaInfo.type}`
+  //   );
   const mediaID = uuidv4();
+  var media;
   if (mediaInfo.type == "photo") {
-    saveMedia(tweetID, mediaID, mediaInfo.media_url, "image");
-    return {
+    // logger.debug("Is image.");
+    // saveMedia(tweetID, mediaID, mediaInfo.media_url, "image");
+    media = {
       mediaID: mediaID,
-      media_type: "image",
-      url: mediaInfo.media_url,
-      file_path: "",
+      mediaType: "image",
+      url: extractUrl(mediaInfo.media_url),
+      filePath: "",
     };
   } else if (mediaInfo.type == "video") {
+    // logger.debug("Is video.");
     let bestVideoSource = findBestVideoSource(mediaInfo.video_info.variants);
     saveMedia(tweetID, mediaID, bestVideoSource, "video");
     saveMedia(tweetID, mediaID, mediaInfo.media_url, "preview");
-    return {
+    media = {
       mediaID: mediaID,
       mediaType: "video",
       url: bestVideoSource,
       filePath: "",
-      preview: mediaInfo.media_url,
-      preview_file_path: "",
+      previewUrl: extractUrl(mediaInfo.media_url),
+      previewFilePath: "",
     };
   }
+  logger.debug(`Media: ${JSON.stringify(media)}`);
+  return media;
 }
 
 export default extractMedia;

@@ -11,16 +11,18 @@ async function fetchTimeline() {
   let maxTimelineId = TweetService.getTimeLineMaxId(); // Get last position (max Tweet ID) from database
 
   // Query new Tweets from timeline API
-  let response = tweetJSON; // Mock the Timeline response
-  logger.debug(`Fetched response: ${response}`);
+  const timelineResponse = tweetJSON; // Mock the Timeline response
+  //   logger.debug(`Fetched response: ${JSON.stringify(timelineResponse, null, 2)}`);
 
   // Extract users and save
-  let userSet = new Set(response.data.map((tweet) => tweet.user.id_str));
-  logger.debug(`Users in response: ${userSet}`);
+  let userSet = new Set(
+    timelineResponse.data.map((tweet) => tweet.user.id_str)
+  );
+  logger.debug(`Users in response: ${JSON.stringify(userSet)}`);
   let nonExistingUsers = await UserService.findNonExistingUsersByIds([
     ...userSet,
   ]);
-  logger.debug(`Nonexisting users: ${nonExistingUsers}`);
+  logger.debug(`Nonexisting users: ${JSON.stringify(nonExistingUsers)}`);
   if (nonExistingUsers.length > 0) {
     let users = await fetchUsers(nonExistingUsers);
     await UserService.insertMany(users)
@@ -29,11 +31,13 @@ async function fetchTimeline() {
   }
 
   // Format Tweets in the response
-  let tweets = [];
-  let tweetIdSet = new Set();
-  for (var i = 0; i < response.data.length; i++) {
-    var ele = response.data[i];
-    var tweet = {
+  var tweets = [];
+  var tweetIdSet = new Set();
+
+  for (var i = 0; i < timelineResponse.data.length; i++) {
+    var ele = timelineResponse.data[i];
+    // logger.debug(`Tweet element ${ele}`);
+    let tweet = {
       _id: ele.id_str,
       text: ele.text,
       author: ele.user.id_str,
@@ -44,22 +48,44 @@ async function fetchTimeline() {
         favoriteCount: ele.favorite_count,
       },
     };
+    // logger.debug(
+    //   `Tweet: ${ele.id_str}, Medias: ${JSON.stringify(ele.extended_entities)}`
+    // );
+
     if (ele.extended_entities && ele.extended_entities.media) {
-      tweet.media = ele.extended_entities.media.map((mediaJSON) =>
-        extractMedia(ele.id_str, mediaJSON)
-      );
+      tweet.media = ele.extended_entities.media.map((mediaJSON) => {
+        // logger.info(
+        //   `Tweet: ${ele.id_str}, media: ${JSON.stringify(
+        //     mediaJSON
+        //   )}, extracted: ${JSON.stringify(extractMedia(ele.id_str, mediaJSON))}`
+        // );
+        return extractMedia(ele.id_str, mediaJSON);
+      });
     } else continue;
-    if (!tweetIdSet.has(tweet._id)) tweets.push(tweet);
+    // logger.debug(`Tweet media: ${JSON.stringify(tweet.media)}`);
+
+    tweetIdSet.add(tweet._id);
+    tweets.push(tweet);
+    // logger.debug(
+    //   `Not existed add to tweets, ${[...tweetIdSet]}, ${tweets.length}`
+    // );
+    if (!tweetIdSet.has(tweet._id)) {
+      tweetIdSet.add(tweet._id);
+      tweets.push(tweet);
+      logger.debug(`Not existed add to tweets, ${[...tweetIdSet]}`);
+    }
   }
-  logger.verbose(tweets);
-  logger.debug(tweetIdSet);
+  logger.debug(`Number of tweets to update: ${tweets.length}`);
+  logger.debug(`Tweet IDs: ${[...tweetIdSet]}`);
   let nonExistingTweetIdSet = new Set(
     await TweetService.findNonExistingTweetsByIds([...tweetIdSet]).catch(
       (err) => logger.error(err)
     )
   );
 
-  //   console.log(nonExistingTweetIdSet);
+  logger.debug(
+    `Non-existing Tweet IDs: ${JSON.stringify(nonExistingTweetIdSet)}`
+  );
   if (nonExistingTweetIdSet.size > 0) {
     tweets = tweets.filter((tweet) => nonExistingTweetIdSet.has(tweet._id));
     await TweetService.insertMany(tweets)
