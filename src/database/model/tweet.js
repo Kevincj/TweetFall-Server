@@ -2,6 +2,8 @@ import { mongoose, Schema } from "mongoose";
 
 const tweetSchema = new Schema({
   _id: { type: String, required: true },
+
+  tweetType: String,
   text: String,
 
   ref: {
@@ -43,8 +45,6 @@ const tweetSchema = new Schema({
       mediaID: String,
       mediaType: String,
       url: String,
-      filePath: String,
-      previewFilePath: String,
     },
   ],
 });
