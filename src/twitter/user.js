@@ -9,7 +9,7 @@ export async function fetchUsers(userList) {
     .then((response) => response.data)
     .catch((error) => logger.error(error));
 
-  console.log(data);
+//   console.log(data);
   let users = data.map((user) => ({
     _id: user.id_str,
     userName: user.name,
