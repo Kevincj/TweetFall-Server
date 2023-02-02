@@ -7,16 +7,14 @@ import config from "config";
 import logger from "../logging.js";
 
 function saveMedia(tweetID, mediaID, mediaUrl, mediaType) {
-  if (mediaType == "preview")
-    saveFile(tweetID, mediaID, mediaUrl, "previewFilePath");
-  else saveFile(tweetID, mediaID, mediaUrl, "filePath");
-}
-
-function saveFile(tweetID, mediaID, mediaUrl, key) {
   //   const field = `media.$.${key}`;
   const directory = config.get("storage.directory");
   const extension = extractExtension(mediaUrl);
-  const fileName = `${tweetID}-${mediaID}.${extension}`;
+  const fileName =
+    mediaType == "preview"
+      ? `${tweetID}-${mediaID}-thumbnail.${extension}`
+      : `${tweetID}-${mediaID}.${extension}`;
+
   const downloader = new Downloader({
     url: mediaUrl,
     directory: directory,
@@ -25,23 +23,7 @@ function saveFile(tweetID, mediaID, mediaUrl, key) {
   downloader
     .download()
     .then(() => {
-      logger.debug(`Downloaded: ${mediaUrl}`);
-      logger.debug(
-        JSON.stringify(
-          { _id: tweetID, "media.mediaID": mediaID },
-          {
-            $set: { [`media.$.${key}`]: fileName },
-          }
-        )
-      );
-      Tweet.updateOne(
-        { _id: tweetID, "media.mediaID": mediaID },
-        {
-          $set: { [`media.$.${key}`]: fileName },
-        }
-      )
-        .then((res) => logger.debug(JSON.stringify(res)))
-        .catch((err) => logger.error(err));
+      logger.debug(`Downloaded ${mediaUrl} as ${fileName}`);
     })
     .catch((e) => logger.error(`Failed to download:  ${mediaUrl}`));
 }
@@ -78,20 +60,17 @@ function extractMedia(tweetID, mediaInfo) {
       mediaID: mediaID,
       mediaType: "image",
       url: extractUrl(mediaInfo.media_url),
-      filePath: "",
     };
   } else if (mediaInfo.type == "video") {
     // logger.debug("Is video.");
     let bestVideoSource = findBestVideoSource(mediaInfo.video_info.variants);
     saveMedia(tweetID, mediaID, bestVideoSource, "video");
-    saveMedia(tweetID, mediaID, mediaInfo.media_url, "preview");
+    saveMedia(tweetID, mediaID, extractUrl(mediaInfo.media_url), "preview");
     media = {
       mediaID: mediaID,
       mediaType: "video",
       url: bestVideoSource,
-      filePath: "",
-      previewUrl: extractUrl(mediaInfo.media_url),
-      previewFilePath: "",
+      preview: extractUrl(mediaInfo.media_url),
     };
   }
   logger.debug(`Media: ${JSON.stringify(media)}`);
