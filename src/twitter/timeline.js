@@ -5,7 +5,7 @@ import logger from "../logging.js";
 import tweetJSON from "../../test_data.json" assert { type: "json" }; // Sample Twitter timeline response
 import TweetService from "../database/service/tweet_service.js";
 import UserService from "../database/service/user_service.js";
-import { fetchUsers } from "./user.js";
+import { fetchUsersInTimeline } from "./user.js";
 
 async function fetchTimeline() {
   let maxTimelineId = TweetService.getTimeLineMaxId(); // Get last position (max Tweet ID) from database
@@ -15,6 +15,7 @@ async function fetchTimeline() {
   //   logger.debug(`Fetched response: ${JSON.stringify(timelineResponse, null, 2)}`);
 
   // Extract users and save
+  //TODO: Split retweeters and normal users
   let userSet = new Set(
     timelineResponse.data.map((tweet) => tweet.user.id_str)
   );
@@ -24,7 +25,7 @@ async function fetchTimeline() {
   ]);
   logger.debug(`Nonexisting users: ${JSON.stringify(nonExistingUsers)}`);
   if (nonExistingUsers.length > 0) {
-    let users = await fetchUsers(nonExistingUsers);
+    let users = await fetchUsersInTimeline(nonExistingUsers);
     await UserService.insertMany(users)
       .then(() => logger.info(`User insertion succeeds.`))
       .catch((err) => logger.error(err));
@@ -37,6 +38,11 @@ async function fetchTimeline() {
   for (var i = 0; i < timelineResponse.data.length; i++) {
     var ele = timelineResponse.data[i];
     // logger.debug(`Tweet element ${ele}`);
+
+    if (ele.retweeted_status != undefined) {
+      ele = ele.retweeted_status;
+    }
+
     let tweet = {
       _id: ele.id_str,
       text: ele.text,
@@ -48,19 +54,15 @@ async function fetchTimeline() {
         favoriteCount: ele.favorite_count,
       },
     };
+
     // logger.debug(
     //   `Tweet: ${ele.id_str}, Medias: ${JSON.stringify(ele.extended_entities)}`
     // );
 
     if (ele.extended_entities && ele.extended_entities.media) {
-      tweet.media = ele.extended_entities.media.map((mediaJSON) => {
-        // logger.info(
-        //   `Tweet: ${ele.id_str}, media: ${JSON.stringify(
-        //     mediaJSON
-        //   )}, extracted: ${JSON.stringify(extractMedia(ele.id_str, mediaJSON))}`
-        // );
-        return extractMedia(ele.id_str, mediaJSON);
-      });
+      tweet.media = ele.extended_entities.media.map((mediaJSON) =>
+        extractMedia(ele.id_str, mediaJSON)
+      );
     } else continue;
     // logger.debug(`Tweet media: ${JSON.stringify(tweet.media)}`);
 

@@ -6,16 +6,9 @@ const tweetSchema = new Schema({
   tweetType: String,
   text: String,
 
-  replyTo: String,
-  retweetFrom: String,
-  QuoteFrom: String,
-
-  ref: {
-    hasMentions: Boolean,
-    mentions: [String],
-    hasHashTags: Boolean,
-    hashTags: [String],
-  },
+  retweetedBy: String,
+  repliedBy: String,
+  quotedBy: String,
 
   author: String,
 
