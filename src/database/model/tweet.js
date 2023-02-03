@@ -6,16 +6,11 @@ const tweetSchema = new Schema({
   tweetType: String,
   text: String,
 
+  replyTo: String,
+  retweetFrom: String,
+  QuoteFrom: String,
+
   ref: {
-    isReply: Boolean,
-    replyToUser: String,
-    replyToTweet: String,
-    isRetweet: Boolean,
-    retweetToUserId: String,
-    retweetToTweetId: String,
-    isQuote: Boolean,
-    quoteToUserId: String,
-    quoteToTweetId: String,
     hasMentions: Boolean,
     mentions: [String],
     hasHashTags: Boolean,
@@ -45,6 +40,7 @@ const tweetSchema = new Schema({
       mediaID: String,
       mediaType: String,
       url: String,
+      preview: String,
     },
   ],
 });
