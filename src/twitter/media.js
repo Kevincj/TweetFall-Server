@@ -8,7 +8,7 @@ import logger from "../logging.js";
 
 function saveMedia(tweetID, mediaID, mediaUrl, mediaType) {
   //   const field = `media.$.${key}`;
-  const directory = config.get("storage.directory");
+  const directory = config.get("Storage.directory");
   const extension = extractExtension(mediaUrl);
   const fileName =
     mediaType == "preview"

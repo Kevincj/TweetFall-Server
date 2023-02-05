@@ -5,9 +5,9 @@ import logger from "../logging.js";
 mongoose.set("strictQuery", true);
 mongoose
   .connect(
-    `mongodb://${config.get("mongodb.host")}:${config.get(
-      "mongodb.port"
-    )}/${config.get("mongodb.databaseName")}`,
+    `mongodb://${config.get("Mongodb.host")}:${config.get(
+      "Mongodb.port"
+    )}/${config.get("Mongodb.databaseName")}`,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
