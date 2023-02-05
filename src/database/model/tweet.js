@@ -3,10 +3,31 @@ import { mongoose, Schema } from "mongoose";
 const tweetSchema = new Schema({
   _id: { type: String, required: true },
 
-  tweetType: String,
+  authorId: String,
+
+  retweetedBy: {
+    type: [String],
+    default: [],
+  },
+  likedBy: {
+    type: [String],
+    default: [],
+  },
+
+  finalized: {
+    type: Boolean,
+    default: False,
+  },
+
+  inTrashBin: {
+    type: Boolean,
+    default: False,
+  },
+
   text: String,
 
-  author: String,
+  retweetCount: Number,
+  likeCount: Number,
 
   createdAt: {
     type: Date,
@@ -14,22 +35,15 @@ const tweetSchema = new Schema({
     default: () => Date.now(),
   },
 
-  UpdatedAt: {
-    type: Date,
-    default: () => Date.now(),
-  },
-
-  metrics: {
-    retweetCount: Number,
-    favoriteCount: Number,
-  },
-
   media: [
     {
       mediaID: String,
       mediaType: String,
-      url: String,
-      preview: String,
+      mediaUrl: String,
+      previewUrl: String,
+      storedLocally: Boolean,
+      mediaPath: String,
+      previewPath: String,
     },
   ],
 });
