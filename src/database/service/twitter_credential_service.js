@@ -24,13 +24,21 @@ class TwitterCredentialService {
         },
         Bearer: config.get("Twitter.Bearer"),
       };
-
       await TwitterCredential.create(twitterInfo)
-        .then(logger.info(`Created one creadential entry.`))
+        .then(logger.info(`Created one credential entry.`))
         .catch((err) => logger.error(err));
+      return await TwitterCredential.findOne();
     } else {
       logger.info(`Found one credential.`);
+      return credential;
     }
+  }
+
+  static async updateCredential(credential) {
+    await credential
+      .save()
+      .then(logger.info(`Credential saved`))
+      .catch((err) => logger.error(err));
   }
 }
 
