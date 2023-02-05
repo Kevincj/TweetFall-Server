@@ -6,10 +6,6 @@ const tweetSchema = new Schema({
   tweetType: String,
   text: String,
 
-  retweetedBy: String,
-  repliedBy: String,
-  quotedBy: String,
-
   author: String,
 
   createdAt: {
