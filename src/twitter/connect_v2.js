@@ -16,6 +16,7 @@ const autoRefresherPlugin = new TwitterApiAutoTokenRefresher({
     clientSecret: credential.OAuthV2.clientSecret,
   },
   onTokenUpdate(token) {
+    logger.info(`Token expired. Refreshing token...`);
     credential.OAuthV2.accessToken = token.accessToken;
     credential.OAuthV2.refreshToken = token.refreshToken;
     TwitterCredentialService.updateCredential(credential);
