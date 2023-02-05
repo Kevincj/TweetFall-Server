@@ -10,8 +10,11 @@ const rateLimitPlugin = new TwitterApiRateLimitPlugin();
 const credential = await TwitterCredentialService.loadCredential();
 
 const autoRefresherPlugin = new TwitterApiAutoTokenRefresher({
-  refreshToken: credential.OAuthV2.accessToken,
-  refreshCredentials: credential.OAuthV2.refreshToken,
+  refreshToken: credential.OAuthV2.refreshToken,
+  refreshCredentials: {
+    clientId: credential.OAuthV2.clientId,
+    clientSecret: credential.OAuthV2.clientSecret,
+  },
   onTokenUpdate(token) {
     credential.OAuthV2.accessToken = token.accessToken;
     credential.OAuthV2.refreshToken = token.refreshToken;
