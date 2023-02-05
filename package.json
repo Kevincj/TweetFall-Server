@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@twitter-api-v2/plugin-rate-limit": "^1.1.0",
     "@twitter-api-v2/plugin-token-refresher": "^1.0.0",
     "config": "^3.3.8",
     "cors": "^2.8.5",
@@ -9,7 +10,6 @@
     "nodejs-file-downloader": "^4.10.3",
     "prettier": "^2.8.1",
     "promised-twit": "^0.1.0",
-    "twit": "^2.2.11",
     "twitter-api-v2": "^1.14.1",
     "uuid": "^9.0.0",
     "winston": "^3.8.2"
