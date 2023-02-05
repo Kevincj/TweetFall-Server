@@ -1,30 +1,31 @@
 import { TwitterApi } from "twitter-api-v2";
 import { TwitterApiAutoTokenRefresher } from "@twitter-api-v2/plugin-token-refresher";
+import { TwitterApiRateLimitPlugin } from "@twitter-api-v2/plugin-rate-limit";
 import config from "config";
+import TwitterCredentialService from "../database/service/twitter_credential_service.js";
+import logger from "../logging.js";
 
-const credentials = {
-  clientId: config.get("Twitter.OAuth2.client_id"),
-  clientSecret: config.get("Twitter.OAuth2.client_secret"),
-};
-// Obtained first through OAuth2 auth flow
-const tokenStore = {
-  accessToken: config.get("Twitter.OAuth2.access_token"),
-  refreshToken: config.get("Twitter.OAuth2.refresh_token"),
-};
+const rateLimitPlugin = new TwitterApiRateLimitPlugin();
+
+const credential = await TwitterCredentialService.loadCredential();
 
 const autoRefresherPlugin = new TwitterApiAutoTokenRefresher({
-  refreshToken: tokenStore.refreshToken,
-  refreshCredentials: credentials,
+  refreshToken: credential.OAuthV2.accessToken,
+  refreshCredentials: credential.OAuthV2.refreshToken,
   onTokenUpdate(token) {
-    tokenStore.accessToken = token.accessToken;
-    tokenStore.refreshToken = token.refreshToken;
-    // store in DB/Redis/...
+    credential.OAuthV2.accessToken = token.accessToken;
+    credential.OAuthV2.refreshToken = token.refreshToken;
+    TwitterCredentialService.updateCredential(credential);
   },
   onTokenRefreshError(error) {
     console.error("Refresh error", error);
   },
 });
 
-const client = new TwitterApi(tokenStore.accessToken, {
-  plugins: [autoRefresherPlugin],
+const v2Client = new TwitterApi(credential.OAuthV2.accessToken, {
+  plugins: [autoRefresherPlugin, rateLimitPlugin],
 });
+
+await v2Client.currentUserV2().catch((err) => logger.error(err));
+
+export { rateLimitPlugin, v2Client };

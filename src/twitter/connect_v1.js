@@ -1,11 +1,14 @@
-import Twit from "twit";
+import { TwitterApi } from "twitter-api-v2";
 import config from "config";
 import logger from "../logging.js";
-const API = new Twit({
-  consumer_key: config.get("Twitter.OAuth1.api_key"),
-  consumer_secret: config.get("Twitter.OAuth1.api_secret"),
-  access_token: config.get("Twitter.OAuth1.access_token"),
-  access_token_secret: config.get("Twitter.OAuth1.access_secret"),
+import TwitterCredentialService from "../database/service/twitter_credential_service.js";
+const credential = await TwitterCredentialService.loadCredential();
+const v1Client = new TwitterApi({
+  appKey: credential.OAuthV1.apiKey,
+  appSecret: credential.OAuthV1.apiSecret,
+  accessToken: credential.OAuthV1.accessToken,
+  accessSecret: credential.OAuthV1.accessSecret,
 });
 
-export default API;
+await v1Client.currentUser().catch((err) => logger.error(err));
+export default v1Client;
