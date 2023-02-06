@@ -10,7 +10,3 @@ export default async function getRateLimit(entryPoint) {
     `Rate limit for ${entryPoint}: ${currentRateLimit.remaining} out of ${currentRateLimit.limit}`
   );
 }
-
-(async () => {
-  console.log(getRateLimit("users/me"));
-})();

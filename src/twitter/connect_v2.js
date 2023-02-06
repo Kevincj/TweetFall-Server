@@ -32,4 +32,4 @@ const v2Client = new TwitterApi(credential.OAuthV2.accessToken, {
 
 await v2Client.currentUserV2().catch((err) => logger.error(err));
 
-export { rateLimitPlugin, v2Client };
+export default { rateLimitPlugin, v2Client };
