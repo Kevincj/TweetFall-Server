@@ -6,9 +6,17 @@ import tweetJSON from "../../test_data.json" assert { type: "json" }; // Sample 
 import TweetService from "../database/service/tweet_service.js";
 import UserService from "../database/service/user_service.js";
 import { fetchUsersInTimeline } from "./user.js";
+import TwitterSyncStatusService from "../database/service/twitter_sync_status_service.js";
 
-async function fetchTimeline() {
-  let maxTimelineId = TweetService.getTimeLineMaxId(); // Get last position (max Tweet ID) from database
+async function updateTimeline() {
+  // Load Twitter configuration from database
+  let twitterSyncStatus =
+    await TwitterSyncStatusService.loadTwitterSyncStatus();
+
+  // Get last position (max Tweet ID) from database
+  let maxTimelineId = twitterSyncStatus.maxTimelineId;
+  logger.info(`Received maxTimelineId: ${maxTimelineId}`);
+  return [];
 
   // Query new Tweets from timeline API
   const timelineResponse = tweetJSON; // Mock the Timeline response
@@ -98,4 +106,4 @@ async function fetchTimeline() {
   return tweets;
 }
 
-export default fetchTimeline;
+export default updateTimeline;
