@@ -35,6 +35,12 @@ const tweetSchema = new Schema({
     default: () => Date.now(),
   },
 
+  lastCheckedAt: {
+    type: Date,
+    immutable: true,
+    default: () => Date.now(),
+  },
+
   media: [
     {
       mediaID: String,

@@ -49,6 +49,12 @@ const userSchema = new Schema({
   likes: Number,
 
   blackListed: Boolean,
+
+  lastCheckedAt: {
+    type: Date,
+    immutable: true,
+    default: () => Date.now(),
+  },
 });
 const User = mongoose.model("User", userSchema);
 
