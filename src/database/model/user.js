@@ -8,15 +8,15 @@ const userSchema = new Schema({
 
   trackOriginalTweets: {
     type: Boolean,
-    default: True,
+    default: true,
   },
   trackRetweets: {
     type: Boolean,
-    default: False,
+    default: false,
   },
   trackLikedTweets: {
     type: Boolean,
-    default: False,
+    default: false,
   },
 
   retweets: {

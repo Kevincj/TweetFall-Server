@@ -16,12 +16,12 @@ const tweetSchema = new Schema({
 
   finalized: {
     type: Boolean,
-    default: False,
+    default: false,
   },
 
   inTrashBin: {
     type: Boolean,
-    default: False,
+    default: false,
   },
 
   text: String,
