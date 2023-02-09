@@ -29,6 +29,9 @@
 	},
 	"Storage":{
 		"directory": "./storage/"
-	}
+	},
 
+	"Configuration":{
+		"min_timeline_update_interval": 3600000
+	}
 }
