@@ -7,6 +7,7 @@ import TweetService from "../database/service/tweet_service.js";
 import UserService from "../database/service/user_service.js";
 import { fetchUsersInTimeline } from "./user.js";
 import TwitterSyncStatusService from "../database/service/twitter_sync_status_service.js";
+import config from "config";
 
 async function updateTimeline() {
   // Load Twitter configuration from database
@@ -14,8 +15,26 @@ async function updateTimeline() {
     await TwitterSyncStatusService.loadTwitterSyncStatus();
 
   // Get last position (max Tweet ID) from database
-  let maxTimelineId = twitterSyncStatus.maxTimelineId;
-  logger.info(`Received maxTimelineId: ${maxTimelineId}`);
+  let timelineMaxId = twitterSyncStatus.timelineMaxId;
+  let lastUpdateTimelineAt = twitterSyncStatus.lastUpdateTimelineAt;
+  logger.info(
+    `Received timelineMaxId: ${timelineMaxId}, lastUpdateAt: ${lastUpdateTimelineAt.toLocaleString()}`
+  );
+  let currentTimestamp = new Date();
+  if (
+    currentTimestamp - lastUpdateTimelineAt >
+    config.get("Configuration.min_timeline_update_interval")
+  ) {
+    logger.info(
+      `Reach minimum timeline update interval. Time diff: ${
+        currentTimestamp - lastUpdateTimelineAt
+      }`
+    );
+  } else {
+    logger.info(
+      `Not reach target timeline interval. Skip fetching from Twitter.`
+    );
+  }
   return [];
 
   // Query new Tweets from timeline API
