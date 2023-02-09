@@ -31,13 +31,11 @@ const tweetSchema = new Schema({
 
   createdAt: {
     type: Date,
-    immutable: true,
     default: () => Date.now(),
   },
 
   lastCheckedAt: {
     type: Date,
-    immutable: true,
     default: () => Date.now(),
   },
 

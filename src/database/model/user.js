@@ -52,7 +52,6 @@ const userSchema = new Schema({
 
   lastCheckedAt: {
     type: Date,
-    immutable: true,
     default: () => Date.now(),
   },
 });
