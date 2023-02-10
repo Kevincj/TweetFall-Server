@@ -1,11 +1,9 @@
 import { TwitterApi } from "twitter-api-v2";
 import { TwitterApiAutoTokenRefresher } from "@twitter-api-v2/plugin-token-refresher";
-import { TwitterApiRateLimitPlugin } from "@twitter-api-v2/plugin-rate-limit";
+import rateLimitPlugin from "./rate_limit_plugin.js";
 import config from "config";
 import TwitterCredentialService from "../database/service/twitter_credential_service.js";
 import logger from "../logging.js";
-
-const rateLimitPlugin = new TwitterApiRateLimitPlugin();
 
 const credential = await TwitterCredentialService.loadCredential();
 
@@ -30,6 +28,6 @@ const v2Client = new TwitterApi(credential.OAuthV2.accessToken, {
   plugins: [autoRefresherPlugin, rateLimitPlugin],
 });
 
-await v2Client.currentUserV2().catch((err) => logger.error(err));
+// await v2Client.currentUserV2().catch((err) => logger.error(err));
 
-export default { rateLimitPlugin, v2Client };
+export { rateLimitPlugin, v2Client };
