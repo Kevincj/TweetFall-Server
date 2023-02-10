@@ -133,3 +133,4 @@ dist
 config/default.json
 drafts
 test_data.json
+output.json

@@ -3,11 +3,15 @@ import extractMedia from "./media.js";
 // Database connection
 import logger from "../logging.js";
 import tweetJSON from "../../test_data.json" assert { type: "json" }; // Sample Twitter timeline response
+import tweetIdJSON from "../../output.json" assert { type: "json" };
 import TweetService from "../database/service/tweet_service.js";
 import UserService from "../database/service/user_service.js";
 import { fetchUsersInTimeline } from "./user.js";
 import TwitterSyncStatusService from "../database/service/twitter_sync_status_service.js";
 import config from "config";
+import v1Client from "./connect_v1.js";
+
+import fs from "fs";
 
 async function updateTimeline() {
   // Load Twitter configuration from database
@@ -35,6 +39,34 @@ async function updateTimeline() {
       `Not reach target timeline interval. Skip fetching from Twitter.`
     );
   }
+
+  // const homeTimeline = await v1Client.v2.homeTimeline({
+  //   max_results: 100,
+  // });
+  // while (
+  //   !homeTimeline.done &&
+  //   homeTimeline.rateLimit.remaining > 0 &&
+  //   timelineMaxId < homeTimeline.tweets[homeTimeline.tweets.length - 1].id
+  // ) {
+  //   console.log(homeTimeline.rateLimit.remaining, homeTimeline.tweets.length);
+  //   if (homeTimeline.tweets.length > 100000) break;
+  //   await homeTimeline.fetchNext();
+  // }
+
+  // var jsonContent = JSON.stringify(homeTimeline.tweets);
+  // // console.log(jsonContent);
+
+  // fs.writeFile("output.json", jsonContent, "utf8", function (err) {
+  //   if (err) {
+  //     console.log("An error occured while writing JSON Object to File.");
+  //     return console.log(err);
+  //   }
+
+  //   console.log("JSON file has been saved.");
+  // });
+
+  const timelineTweetIds = tweetIdJSON;
+
   return [];
 
   // Query new Tweets from timeline API
