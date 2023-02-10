@@ -30,18 +30,30 @@ const userSchema = new Schema({
   },
 
   originalTweetThreshold: {
-    retweet: Number,
-    like: Number,
+    retweetAfterOneDay: Number,
+    retweetAfterThreeDays: Number,
+    retweetAfterSevenDays: Number,
+    likeAfterOneDay: Number,
+    likeAfterThreeDays: Number,
+    likeAfterSevenDays: Number,
   },
 
   retweetThreshold: {
-    retweet: Number,
-    like: Number,
+    retweetAfterOneDay: Number,
+    retweetAfterThreeDays: Number,
+    retweetAfterSevenDays: Number,
+    likeAfterOneDay: Number,
+    likeAfterThreeDays: Number,
+    likeAfterSevenDays: Number,
   },
 
   likedTweetThreshold: {
-    retweet: Number,
-    like: Number,
+    retweetAfterOneDay: Number,
+    retweetAfterThreeDays: Number,
+    retweetAfterSevenDays: Number,
+    likeAfterOneDay: Number,
+    likeAfterThreeDays: Number,
+    likeAfterSevenDays: Number,
   },
 
   followerCount: Number,

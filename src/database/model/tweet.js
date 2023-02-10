@@ -29,6 +29,15 @@ const tweetSchema = new Schema({
   retweetCount: Number,
   likeCount: Number,
 
+  windowedStats: {
+    retweetAfterOneDay: Number,
+    retweetAfterThreeDays: Number,
+    retweetAfterSevenDays: Number,
+    likeAfterOneDay: Number,
+    likeAfterThreeDays: Number,
+    likeAfterSevenDays: Number,
+  },
+
   createdAt: {
     type: Date,
     default: () => Date.now(),
