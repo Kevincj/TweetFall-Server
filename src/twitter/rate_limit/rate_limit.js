@@ -13,7 +13,8 @@ async function getRateLimitV2(entryPoint) {
   return [currentRateLimit.remaining, currentRateLimit.limit];
 }
 
-async function getRateLimitV1(resource, entryPoint) {
+async function getRateLimitV1(entryPoint) {
+  const resource = entryPoint.slice(0, entryPoint.indexOf("/"));
   const { resources } = await v1Client.v1.rateLimitStatuses(resource);
 
   logger.info(

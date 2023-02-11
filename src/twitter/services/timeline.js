@@ -1,15 +1,15 @@
-import extractMedia from "./media.js";
+import extractMedia from "../tools/media.js";
 // import TweetService from "../database/service/tweet_service";
 // Database connection
-import logger from "../logging.js";
-import tweetJSON from "../../test_data.json" assert { type: "json" }; // Sample Twitter timeline response
-import tweetIdJSON from "../../output.json" assert { type: "json" };
-import TweetService from "../database/service/tweet_service.js";
-import UserService from "../database/service/user_service.js";
+import logger from "../../logging.js";
+import tweetJSON from "../../../test_data.json" assert { type: "json" }; // Sample Twitter timeline response
+import tweetIdJSON from "../../../output.json" assert { type: "json" };
+import TweetService from "../../database/service/tweet_service.js";
+import UserService from "../../database/service/user_service.js";
 import { fetchUsersInTimeline } from "./user.js";
-import TwitterSyncStatusService from "../database/service/twitter_sync_status_service.js";
+import TwitterSyncStatusService from "../../database/service/twitter_sync_status_service.js";
 import config from "config";
-import v1Client from "./connect_v1.js";
+import v1Client from "../connect/connect_v1.js";
 
 import fs from "fs";
 

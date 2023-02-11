@@ -1,5 +1,5 @@
-import API from "./connect_v1.js";
-import logger from "../logging.js";
+import API from "../connect/connect_v1.js";
+import logger from "../../logging.js";
 
 async function fetchUsers(userList, userType) {
   let usersString = userList.toString();

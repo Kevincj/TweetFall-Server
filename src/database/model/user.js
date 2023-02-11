@@ -30,30 +30,84 @@ const userSchema = new Schema({
   },
 
   originalTweetThreshold: {
-    retweetAfterOneDay: Number,
-    retweetAfterThreeDays: Number,
-    retweetAfterSevenDays: Number,
-    likeAfterOneDay: Number,
-    likeAfterThreeDays: Number,
-    likeAfterSevenDays: Number,
+    retweetAfterOneDay: {
+      type: Number,
+      default: -1,
+    },
+    retweetAfterThreeDays: {
+      type: Number,
+      default: -1,
+    },
+    retweetAfterSevenDays: {
+      type: Number,
+      default: -1,
+    },
+    likeAfterOneDay: {
+      type: Number,
+      default: -1,
+    },
+    likeAfterThreeDays: {
+      type: Number,
+      default: -1,
+    },
+    likeAfterSevenDays: {
+      type: Number,
+      default: -1,
+    },
   },
 
   retweetThreshold: {
-    retweetAfterOneDay: Number,
-    retweetAfterThreeDays: Number,
-    retweetAfterSevenDays: Number,
-    likeAfterOneDay: Number,
-    likeAfterThreeDays: Number,
-    likeAfterSevenDays: Number,
+    retweetAfterOneDay: {
+      type: Number,
+      default: -1,
+    },
+    retweetAfterThreeDays: {
+      type: Number,
+      default: -1,
+    },
+    retweetAfterSevenDays: {
+      type: Number,
+      default: -1,
+    },
+    likeAfterOneDay: {
+      type: Number,
+      default: -1,
+    },
+    likeAfterThreeDays: {
+      type: Number,
+      default: -1,
+    },
+    likeAfterSevenDays: {
+      type: Number,
+      default: -1,
+    },
   },
 
   likedTweetThreshold: {
-    retweetAfterOneDay: Number,
-    retweetAfterThreeDays: Number,
-    retweetAfterSevenDays: Number,
-    likeAfterOneDay: Number,
-    likeAfterThreeDays: Number,
-    likeAfterSevenDays: Number,
+    retweetAfterOneDay: {
+      type: Number,
+      default: -1,
+    },
+    retweetAfterThreeDays: {
+      type: Number,
+      default: -1,
+    },
+    retweetAfterSevenDays: {
+      type: Number,
+      default: -1,
+    },
+    likeAfterOneDay: {
+      type: Number,
+      default: -1,
+    },
+    likeAfterThreeDays: {
+      type: Number,
+      default: -1,
+    },
+    likeAfterSevenDays: {
+      type: Number,
+      default: -1,
+    },
   },
 
   followerCount: Number,

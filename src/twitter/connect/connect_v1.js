@@ -1,7 +1,7 @@
 import { TwitterApi } from "twitter-api-v2";
 import config from "config";
-import logger from "../logging.js";
-import TwitterCredentialService from "../database/service/twitter_credential_service.js";
+import logger from "../../logging.js";
+import TwitterCredentialService from "../../database/service/twitter_credential_service.js";
 
 const credential = await TwitterCredentialService.loadCredential();
 const v1Client = new TwitterApi({

@@ -1,10 +1,10 @@
 import Downloader from "nodejs-file-downloader";
 import { v4 as uuidv4 } from "uuid";
-import Tweet from "../database/model/tweet.js";
-import { extractUrl, extractExtension } from "../tools/url.js";
+import Tweet from "../../database/model/tweet.js";
+import { extractUrl, extractExtension } from "../../tools/url.js";
 
 import config from "config";
-import logger from "../logging.js";
+import logger from "../../logging.js";
 
 function saveMedia(tweetID, mediaID, mediaUrl, mediaType) {
   //   const field = `media.$.${key}`;
