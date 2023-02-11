@@ -4,7 +4,7 @@ import cors from "cors";
 import config from "config"; // Import config file using node-config
 import logger from "./src/logging.js";
 import "./src/database/connect.js"; // Database connection
-import updateTimeline from "./src/twitter/timeline.js";
+import updateTimeline from "./src/twitter/services/timeline.js";
 
 // Initialize express server
 const app = express();

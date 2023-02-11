@@ -4,7 +4,7 @@ const twitterSyncStatusSchema = new Schema({
   timelineMaxId: Number,
   lastUpdateTimelineAt: {
     type: Date,
-    default: () => Date.parse("1970-01-01"),
+    default: () => Date.parse("2010-11-06T00:00:00Z"),
   },
 });
 

@@ -1,7 +1,7 @@
 import Downloader from "nodejs-file-downloader";
 import { v4 as uuidv4 } from "uuid";
 import Tweet from "../../database/model/tweet.js";
-import { extractUrl, extractExtension } from "../../tools/url.js";
+import { extractUrl, extractExtension } from "./url.js";
 
 import config from "config";
 import logger from "../../logging.js";
