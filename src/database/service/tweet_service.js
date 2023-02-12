@@ -1,6 +1,7 @@
 import Tweet from "../model/tweet.js";
 import "../connect.js";
 import logger from "../../logging.js";
+import LikedTweet from "../model/liked_tweet.js";
 class TweetService {
   static async findNonExistingTweetsByIds(tweetIds) {
     let existingIds = await this.findTweetsByIds(tweetIds);
@@ -38,6 +39,10 @@ class TweetService {
   }
 
   static async updateMediaPath(tweetId, mediaID) {}
+
+  static async getLikedTweetIds() {
+    return (await LikedTweet.find()).map((ele) => ele._id);
+  }
 }
 
 export default TweetService;
