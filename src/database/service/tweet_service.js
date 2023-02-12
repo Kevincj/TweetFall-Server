@@ -41,7 +41,12 @@ class TweetService {
   static async updateMediaPath(tweetId, mediaID) {}
 
   static async getLikedTweetIds() {
-    return (await LikedTweet.find()).map((ele) => ele._id);
+    return new Set((await LikedTweet.find()).map((ele) => ele._id));
+  }
+
+  static async findNonExistingLikedTweet(tweets) {
+    const existingIds = await this.getLikedTweetIds();
+    return tweets.filter((tweet) => !existingIds.has(tweet._id));
   }
 }
 

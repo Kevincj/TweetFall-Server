@@ -2,10 +2,15 @@ import User from "../model/user.js";
 import "../connect.js";
 import logger from "../../logging.js";
 class UserService {
-  static async findNonExistingUsersByIds(userIds) {
-    let existingIds = await this.findUsersByIds(userIds);
+  static async findNonExistingUsersByIds(tweets) {
+		const userIds = [...new Set(
+    tweets.data.map((tweet) => tweet.user.id_str)
+  	)];
+    const existingIds = await this.findUsersByIds(userIds);
     return userIds.filter((idx) => !existingIds.has(idx));
   }
+
+	static async findNonExistingUsers()
 
   static async findUsersByIds(userIds) {
     return new Set(

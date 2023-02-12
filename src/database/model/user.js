@@ -114,7 +114,7 @@ const userSchema = new Schema({
   followingCount: Number,
   likes: Number,
 
-  blackListed: Boolean,
+  blackListed: { type: Boolean, default: false },
 
   lastCheckedAt: {
     type: Date,
