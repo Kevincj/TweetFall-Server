@@ -76,29 +76,20 @@ async function updateTimeline() {
 
   const timelineTweets = tweetJSON;
 
-  return [];
-
-  // Query new Tweets from timeline API
-  const timelineResponse = tweetJSON; // Mock the Timeline response
-  //   logger.debug(`Fetched response: ${JSON.stringify(timelineResponse, null, 2)}`);
-
   // Extract users and save
   //TODO: Split retweeters and normal users
-  let userSet = new Set(
-    timelineResponse.data.map((tweet) => tweet.user.id_str)
+  let nonExistingUserIds = await UserService.findNonExistingUsersByIds(
+    timelineTweets
   );
-  logger.debug(`Users in response: ${JSON.stringify(userSet)}`);
-  let nonExistingUsers = await UserService.findNonExistingUsersByIds([
-    ...userSet,
-  ]);
   logger.debug(`Nonexisting users: ${JSON.stringify(nonExistingUsers)}`);
   if (nonExistingUsers.length > 0) {
-    let users = await fetchUsersInTimeline(nonExistingUsers);
+    let users = await fetchUsersInTimeline(nonExistingUserIds);
     await UserService.insertMany(users)
       .then(() => logger.info(`User insertion succeeds.`))
       .catch((err) => logger.error(err));
   }
 
+  return [];
   // Format Tweets in the response
   var tweets = [];
   var tweetIdSet = new Set();
