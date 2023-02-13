@@ -2,10 +2,19 @@ import Tweet from "../model/tweet.js";
 import "../connect.js";
 import logger from "../../logging.js";
 import LikedTweet from "../model/liked_tweet.js";
+import getNonExistingElements from "../../toolbox/list_diff.js";
 class TweetService {
-  static async findNonExistingTweetsByIds(tweetIds) {
-    let existingIds = await this.findTweetsByIds(tweetIds);
-    return tweetIds.filter((idx) => !existingIds.has(idx));
+  static async findNonExistingTweetIds(tweets) {
+    const tweetIds = [
+      ...new Set(
+        tweets.data.map((tweet) => {
+          if (tweet.retweeted_status == undefined) return tweet.id_str;
+          else return tweet.retweeted_status.id_str;
+        })
+      ),
+    ];
+    const existingIds = await this.findTweetsByIds(tweetIds);
+    return getNonExistingElements(tweetIds, existingIds);
   }
 
   static async findTweetsByIds(tweetIds) {

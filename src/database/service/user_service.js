@@ -1,16 +1,13 @@
 import User from "../model/user.js";
 import "../connect.js";
 import logger from "../../logging.js";
+import getNonExistingElements from "../../toolbox/list_diff.js";
 class UserService {
-  static async findNonExistingUsersByIds(tweets) {
-		const userIds = [...new Set(
-    tweets.data.map((tweet) => tweet.user.id_str)
-  	)];
+  static async findNonExistingUserIds(tweets) {
+    const userIds = [...new Set(tweets.data.map((tweet) => tweet.user.id_str))];
     const existingIds = await this.findUsersByIds(userIds);
-    return userIds.filter((idx) => !existingIds.has(idx));
+    return getNonExistingElements(userIds, existingIds);
   }
-
-	static async findNonExistingUsers()
 
   static async findUsersByIds(userIds) {
     return new Set(
