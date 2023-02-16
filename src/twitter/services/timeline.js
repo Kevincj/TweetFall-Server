@@ -77,8 +77,7 @@ async function updateTimeline() {
   const timelineTweets = tweetJSON;
 
   // Extract users and save
-  //TODO: Split retweeters and normal users
-  let nonExistingUserIds = await UserService.findNonExistingUsersByIds(
+  const nonExistingUserIds = await UserService.findNonExistingUserIds(
     timelineTweets
   );
   logger.debug(`Nonexisting users: ${JSON.stringify(nonExistingUsers)}`);
@@ -89,17 +88,25 @@ async function updateTimeline() {
       .catch((err) => logger.error(err));
   }
 
-  return [];
-  // Format Tweets in the response
-  var tweets = [];
-  var tweetIdSet = new Set();
+  const nonExistingTweetIdSet = new Set(
+    await TweetService.findNonExistingTweetIds(timelineTweets)
+  );
 
-  for (var i = 0; i < timelineResponse.data.length; i++) {
-    var ele = timelineResponse.data[i];
+  for (var i = 0; i < timelineTweets.length; i++) {
+    var ele = timelineTweets[i];
     // logger.debug(`Tweet element ${ele}`);
 
+    var retweetedBy = undefined;
+
     if (ele.retweeted_status != undefined) {
+      retweetedBy = ele.author.id_str;
       ele = ele.retweeted_status;
+    }
+
+    if (nonExistingTweetIdSet.has(ele.id_str)) {
+      // New tweet
+    } else {
+      // Existing tweet, fetch and update it.
     }
 
     let tweet = {
@@ -114,6 +121,7 @@ async function updateTimeline() {
       },
     };
 
+    return [];
     // logger.debug(
     //   `Tweet: ${ele.id_str}, Medias: ${JSON.stringify(ele.extended_entities)}`
     // );
@@ -138,17 +146,17 @@ async function updateTimeline() {
   }
   logger.debug(`Number of tweets to update: ${tweets.length}`);
   logger.debug(`Tweet IDs: ${[...tweetIdSet]}`);
-  let nonExistingTweetIdSet = new Set(
+  let nonExistingTweetIds = new Set(
     await TweetService.findNonExistingTweetsByIds([...tweetIdSet]).catch(
       (err) => logger.error(err)
     )
   );
 
   logger.debug(
-    `Non-existing Tweet IDs: ${JSON.stringify(nonExistingTweetIdSet)}`
+    `Non-existing Tweet IDs: ${JSON.stringify(nonExistingTweetIds)}`
   );
-  if (nonExistingTweetIdSet.size > 0) {
-    tweets = tweets.filter((tweet) => nonExistingTweetIdSet.has(tweet._id));
+  if (nonExistingTweetIds.size > 0) {
+    tweets = tweets.filter((tweet) => nonExistingTweetIds.has(tweet._id));
     await TweetService.insertMany(tweets)
       .then(() => logger.info(`Tweets insertion succeeds.`))
       .catch((err) => logger.error(err));
