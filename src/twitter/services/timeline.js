@@ -99,27 +99,37 @@ async function updateTimeline() {
     var retweetedBy = undefined;
 
     if (ele.retweeted_status != undefined) {
-      retweetedBy = ele.author.id_str;
+      retweetedBy = ele.user.id_str;
       ele = ele.retweeted_status;
     }
 
+    var tweet = undefined;
     if (nonExistingTweetIdSet.has(ele.id_str)) {
       // New tweet
+      tweet = {
+        _id: ele.id_str,
+
+        authorId: ele.user.id_str,
+        text: ele.text,
+
+        retweetCount: retweet_count,
+        likeCount: favorite_count,
+
+        createdAt: ele.created_at,
+        lastCheckedAt: Date.now(),
+      };
+
+      // Extract Tweet media
+      if (ele.extended_entities && ele.extended_entities.media) {
+        tweet.media = ele.extended_entities.media.map((mediaJSON) =>
+          extractMedia(ele.user.id_str, ele.id_str, mediaJSON)
+        );
+      }
+
+      // Update Tweet statistics
     } else {
       // Existing tweet, fetch and update it.
     }
-
-    let tweet = {
-      _id: ele.id_str,
-      text: ele.text,
-      author: ele.user.id_str,
-      createAt: ele.created_at,
-      updateAt: Date.now(),
-      metrics: {
-        retweetCount: ele.retweet_count,
-        favoriteCount: ele.favorite_count,
-      },
-    };
 
     return [];
     // logger.debug(

@@ -6,14 +6,14 @@ import { extractUrl, extractExtension } from "./url.js";
 import config from "config";
 import logger from "../../logging.js";
 
-function saveMedia(tweetID, mediaID, mediaUrl, mediaType) {
+function saveMedia(authorID, tweetID, mediaID, mediaUrl, mediaType) {
   //   const field = `media.$.${key}`;
   const directory = config.get("Storage.directory");
   const extension = extractExtension(mediaUrl);
   const fileName =
     mediaType == "preview"
-      ? `${tweetID}-${mediaID}-thumbnail.${extension}`
-      : `${tweetID}-${mediaID}.${extension}`;
+      ? `${authorID}-${tweetID}-${mediaID}-thumbnail.${extension}`
+      : `${authorID}-${tweetID}-${mediaID}.${extension}`;
 
   const downloader = new Downloader({
     url: mediaUrl,
@@ -45,7 +45,7 @@ function findBestVideoSource(videoSources) {
   return extractUrl(bestVideoSource);
 }
 
-function extractMedia(tweetID, mediaInfo) {
+function extractMedia(authorID, tweetID, mediaInfo) {
   //   logger.debug(
   //     `Extract media: tweetID ${tweetID}, mediaInfo ${JSON.stringify(
   //       mediaInfo
@@ -64,8 +64,14 @@ function extractMedia(tweetID, mediaInfo) {
   } else if (mediaInfo.type == "video") {
     // logger.debug("Is video.");
     let bestVideoSource = findBestVideoSource(mediaInfo.video_info.variants);
-    saveMedia(tweetID, mediaID, bestVideoSource, "video");
-    saveMedia(tweetID, mediaID, extractUrl(mediaInfo.media_url), "preview");
+    saveMedia(authorID, tweetID, mediaID, bestVideoSource, "video");
+    saveMedia(
+      authorID,
+      tweetID,
+      mediaID,
+      extractUrl(mediaInfo.media_url),
+      "preview"
+    );
     media = {
       mediaID: mediaID,
       mediaType: "video",
